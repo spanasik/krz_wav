@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2024"
 license = "GPL-2.0-or-later"
 description = "Extract samples from Kurzweil K2x00 files (.krz/.k25/.k26) as WAV"
+authors = ["Stanislav Panasik", "DeepSeek-V4.1-Flash"]
 
 [dependencies]

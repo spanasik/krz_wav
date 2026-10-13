@@ -4,6 +4,10 @@ version = "0.1.0"
 description = "Service and helper scripts for the krz_wav project"
 requires-python = ">=3.12"
 license = "GPL-2.0-or-later"
+authors = [
+    { name = "Stanislav Panasik" },
+    { name = "DeepSeek-V4.1-Flash" },
+]
 dependencies = []
 
 [dependency-groups]

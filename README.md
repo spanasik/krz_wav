@@ -1,12 +1,19 @@
 # krz_wav
 
+Based on **[KurzFiler](https://kurzfiler.sourceforge.io/)** by Marc Halbruegge —
+the Java GUI editor for Kurzweil K2x00 files. The KRZ reading logic and the expected
+behaviour were taken from it; the only thing missing there was a small
+command-line converter that is not written in Java, so this is our Rust version
+doing the same job. See [License](#license) below for the legal part.
+
 Kurzweil K2x00 (`.krz`, `.k25`, `.k26`) to WAV converter.
 
 Extracts **all samples** stored in a Kurzweil file and writes them as 16-bit
 WAV files. Written in Rust with no external dependencies, so the binary is
 portable and small.
 
-Started by Stanislav Panasik on Oct 13 2026 21:00
+Started by Stanislav Panasik on Oct 13 2026 21:00.
+Rust implementation written by **DeepSeek-V4.1-Flash** (AI assistant).
 
 ## Build
 
@@ -113,17 +120,10 @@ Test fixtures are stored in CVS/RCS format under `kurzfiler/KurzFiler1.0/tests/`
 ## License
 
 `krz_wav` is released under the **GNU General Public License, version 2 or later**
-(GPL-2.0-or-later), the same license as KurzFiler. The full text is in
-[`LICENSE`](LICENSE).
+(GPL-2.0-or-later) — the same license as
+[KurzFiler](https://kurzfiler.sourceforge.io/), whose KRZ handling this project is
+built on. The full text is in [`LICENSE`](LICENSE).
 
-The KRZ/K2x00 reader here is an independent implementation written from scratch in
-Rust; no KurzFiler code was copied. The understanding of the file format and the
-reference behaviour, however, come from **KurzFiler** — a free soundfile editor for
-Kurzweil K2x00 samplers by Marc Halbruegge:
-
-- Home page: <https://kurzfiler.sourceforge.io/>
-- Copyright (c) 2001-2007 Marc Halbruegge
-- License: GPL-2.0-or-later
-
-`krz_wav` is not affiliated with or endorsed by KurzFiler. A copy of the KurzFiler
-sources is kept under `kurzfiler/` for reference and remains under its own license.
+KurzFiler is copyright (c) 2001-2007 Marc Halbruegge and is licensed under
+GPL-2.0-or-later. `krz_wav` is not affiliated with or endorsed by it. The KurzFiler
+sources kept under `kurzfiler/` remain under their own license.
