@@ -1,0 +1,16 @@
+# Conda environment for service/helper Python tooling of the krz_wav project.
+#
+# Create/update:
+#   conda env create -f environment.yml      # first time
+#   conda env update -f environment.yml --prune
+#
+# Then the Python toolchain is available, e.g.:
+#   conda run -n krz_wav uv --version
+name: krz_wav
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - uv

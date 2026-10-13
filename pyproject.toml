@@ -1,0 +1,17 @@
+[project]
+name = "krz-wav-tools"
+version = "0.1.0"
+description = "Service and helper scripts for the krz_wav project"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest", "ruff"]
+
+[tool.uv]
+# This project only hosts service scripts, it is not an installable package.
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["scripts"]
+python_files = ["test_*.py", "*_test.py"]
