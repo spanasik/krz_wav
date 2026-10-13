@@ -54,7 +54,9 @@ def unique_destination(destination: Path, stem: str) -> Path:
     if not destination.exists():
         return destination
 
-    candidate = destination.with_name(f"{destination.stem} ({stem}){destination.suffix}")
+    candidate = destination.with_name(
+        f"{destination.stem} ({stem}){destination.suffix}"
+    )
     counter = 2
     while candidate.exists():
         candidate = destination.with_name(
@@ -81,7 +83,9 @@ def merge(staging: Path, target: Path, stem: str) -> tuple[int, int]:
     return files, renamed
 
 
-def convert_one(binary: Path, krz: Path, staging: Path) -> subprocess.CompletedProcess[str]:
+def convert_one(
+    binary: Path, krz: Path, staging: Path
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [str(binary), str(krz), str(staging)],
         check=False,

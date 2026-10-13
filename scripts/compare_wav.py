@@ -40,9 +40,7 @@ def compare(expected: bytes, actual: bytes, check_loop: bool) -> list[str]:
         if left is None or right is None:
             errors.append(f"chunk {name!r} missing in one of the files")
         elif left != right:
-            errors.append(
-                f"chunk {name!r} differs: {len(left)} vs {len(right)} bytes"
-            )
+            errors.append(f"chunk {name!r} differs: {len(left)} vs {len(right)} bytes")
 
     if check_loop and expected_chunks.get(b"smpl") != actual_chunks.get(b"smpl"):
         errors.append("smpl (loop) chunk differs")
@@ -65,7 +63,9 @@ def main(argv: list[str]) -> int:
             print(f"DIFF: {error}", file=sys.stderr)
         return 1
 
-    print(f"OK: {paths[0]} == {paths[1]} (fmt, data{' , smpl' if '--loop' in argv else ''})")
+    print(
+        f"OK: {paths[0]} == {paths[1]} (fmt, data{' , smpl' if '--loop' in argv else ''})"
+    )
     return 0
 
 

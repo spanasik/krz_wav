@@ -92,7 +92,9 @@ def main() -> int:
         print(f"{size:>9}  {path.relative_to(PROJECT_ROOT).as_posix()}")
 
     total = sum(size for _, size in extracted)
-    print(f"\n{len(extracted)} files, {total} bytes -> {OUTPUT_DIR.relative_to(PROJECT_ROOT)}")
+    print(
+        f"\n{len(extracted)} files, {total} bytes -> {OUTPUT_DIR.relative_to(PROJECT_ROOT)}"
+    )
     return 0
 
 

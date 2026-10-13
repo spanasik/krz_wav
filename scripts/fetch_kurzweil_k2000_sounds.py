@@ -254,7 +254,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"error: cannot read page: {error}", file=sys.stderr)
         return 1
 
-    items = parse(html, base_url=args.page if args.page.startswith(("http", "file")) else "")
+    items = parse(
+        html, base_url=args.page if args.page.startswith(("http", "file")) else ""
+    )
     if not items:
         print("error: no .krz links found on the page", file=sys.stderr)
         return 1

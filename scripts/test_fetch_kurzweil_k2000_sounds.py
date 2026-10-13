@@ -35,7 +35,7 @@ def test_parse_resolves_relative_links_and_deduplicates() -> None:
 
 def test_sanitize() -> None:
     assert sanitize("Bells & Chimes") == "Bells & Chimes"
-    assert sanitize('a/b:c*d?') == "a_b_c_d_"
+    assert sanitize("a/b:c*d?") == "a_b_c_d_"
     assert sanitize("trailing. ") == "trailing"
     assert sanitize("") == "uncategorized"
 

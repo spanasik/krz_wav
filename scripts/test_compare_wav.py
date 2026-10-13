@@ -29,11 +29,15 @@ def test_detects_different_data() -> None:
 
 def test_ignores_extra_chunks_without_loop() -> None:
     smpl = b"smpl" + struct.pack("<I", 60) + bytes(60)
-    errors = compare(make_wav(b"\x01\x02"), make_wav(b"\x01\x02", smpl), check_loop=False)
+    errors = compare(
+        make_wav(b"\x01\x02"), make_wav(b"\x01\x02", smpl), check_loop=False
+    )
     assert errors == []
 
 
 def test_detects_loop_difference_when_requested() -> None:
     smpl = b"smpl" + struct.pack("<I", 60) + bytes(60)
-    errors = compare(make_wav(b"\x01\x02"), make_wav(b"\x01\x02", smpl), check_loop=True)
+    errors = compare(
+        make_wav(b"\x01\x02"), make_wav(b"\x01\x02", smpl), check_loop=True
+    )
     assert any("smpl" in error for error in errors)

@@ -109,10 +109,19 @@ Service/helper scripts are Python and run through [uv](https://docs.astral.sh/uv
 
 ```bash
 uv run scripts/unpack_fixtures.py   # unpack RCS test fixtures into .tmp/fixtures
+uv run scripts/fetch_kurzweil_k2000_sounds.py URL DIR   # download .krz from a page
+uv run scripts/convert_krz_tree.py SRC OUT              # .krz tree -> wav tree
+uv run scripts/analyze_samples.py samples               # warn about noisy samples
 uv run scripts/compare_wav.py A.wav B.wav [--loop]
 uv run pytest -q
 uv run ruff check scripts
 ```
+
+`analyze_samples.py` is a statistical sanity check: it scans WAV files frame by
+frame (RMS + spectral flatness) and prints a `WARNING` for regions that look like
+white noise, e.g. samples whose source data is corrupted or byte-swapped (see
+`hitit/BEAT IT -R.wav`, `jv80violn/violnC*.wav`). It only reports, it never rewrites
+files. Useful flags: `--json`, `--top N`, `--fail-on-warning`.
 
 KurzFiler (the Java reference implementation) sources live in `kurzfiler/`.
 Test fixtures are stored in CVS/RCS format under `kurzfiler/KurzFiler1.0/tests/`.
