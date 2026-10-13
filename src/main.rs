@@ -131,6 +131,37 @@ fn loop_info(sound: &krz::Soundfilehead, no_loop: bool) -> Option<wav::LoopInfo>
     })
 }
 
+struct SampleStats {
+    objects: usize,
+    headers: usize,
+    usable: usize,
+    not_embedded: usize,
+    out_of_bounds: usize,
+}
+
+fn sample_stats(samples: &[krz::Sample], data: &[u8], osize: u32) -> SampleStats {
+    let mut stats = SampleStats {
+        objects: samples.len(),
+        headers: 0,
+        usable: 0,
+        not_embedded: 0,
+        out_of_bounds: 0,
+    };
+
+    for sample in samples {
+        for head in &sample.headers {
+            stats.headers += 1;
+            match head.data_status(osize, data.len()) {
+                krz::DataStatus::Available => stats.usable += 1,
+                krz::DataStatus::NotEmbedded => stats.not_embedded += 1,
+                krz::DataStatus::OutOfBounds => stats.out_of_bounds += 1,
+            }
+        }
+    }
+
+    stats
+}
+
 fn run(args: &Args) -> ExitCode {
     if !args.input.is_file() {
         eprintln!(
@@ -164,16 +195,42 @@ fn run(args: &Args) -> ExitCode {
         }
     };
 
+    let stats = sample_stats(&samples, &data, header.osize);
     let files = output::plan(&samples, &data, header.osize);
     let directory = output::output_directory(&args.output_dir, &args.input, files.len());
 
-    // TODO(T07-T10): write the planned WAV files.
     println!("{BIN} {VERSION}");
     println!("input:      {}", args.input.display());
     println!("output dir: {}", directory.display());
-    println!("samples: {}, files: {}", samples.len(), files.len());
+    println!(
+        "samples: {} object(s), {} header(s): {} usable, {} not embedded, {} out of bounds",
+        stats.objects, stats.headers, stats.usable, stats.not_embedded, stats.out_of_bounds
+    );
+    println!("files:   {}", files.len());
+
+    for sample in &samples {
+        let usable = sample
+            .headers
+            .iter()
+            .filter(|head| head.data_status(header.osize, data.len()) == krz::DataStatus::Available)
+            .count();
+        let required = if sample.is_stereo() { 2 } else { 1 };
+        if usable < required {
+            eprintln!(
+                "warning: sample '{}': not enough usable data ({} of {} header(s) available)",
+                sample.name(),
+                usable,
+                sample.headers.len()
+            );
+        }
+    }
+
     if files.is_empty() {
-        println!("no WAV files to write");
+        if stats.objects == 0 {
+            println!("nothing to extract: the file contains no sample objects");
+        } else {
+            println!("nothing to extract: sample objects found, but no embedded sample data");
+        }
         return ExitCode::SUCCESS;
     }
 

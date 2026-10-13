@@ -65,6 +65,18 @@ impl Soundfilehead {
         self.flags & 0x40 == 0x40
     }
 
+    /// Whether the PCM data of this header can be read from the file.
+    pub fn data_status(&self, osize: u32, file_len: usize) -> DataStatus {
+        if !self.needs_load() {
+            return DataStatus::NotEmbedded;
+        }
+        if self.pcm_range(osize, file_len).is_some() {
+            DataStatus::Available
+        } else {
+            DataStatus::OutOfBounds
+        }
+    }
+
     /// Looping is enabled (flag `0x80` clear, `isLooped()`).
     pub fn is_looped(&self) -> bool {
         self.flags & 0x80 == 0
@@ -86,6 +98,17 @@ impl Soundfilehead {
 
         (end <= file_len).then_some(start..end)
     }
+}
+
+/// Availability of a header's PCM data in the file.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DataStatus {
+    /// Embedded and fully inside the file.
+    Available,
+    /// `needsLoad()` is false: the sound lives in ROM or an external sample pool.
+    NotEmbedded,
+    /// The declared range is invalid or points past the end of the file.
+    OutOfBounds,
 }
 
 /// A parsed sample object: metadata plus all of its sound file headers.
@@ -535,6 +558,29 @@ mod tests {
         let samples = read_samples(&data).unwrap();
         assert_eq!(samples.len(), 3);
         assert!(samples.iter().any(|sample| sample.headers.len() > 1));
+    }
+
+    #[test]
+    fn data_status_classifies_headers() {
+        let data = bassman();
+        let samples = read_samples(&data).unwrap();
+        let header = samples[0].headers[0];
+
+        assert_eq!(header.data_status(1692, data.len()), DataStatus::Available);
+
+        let mut not_embedded = header;
+        not_embedded.flags = 0;
+        assert_eq!(
+            not_embedded.data_status(1692, data.len()),
+            DataStatus::NotEmbedded
+        );
+
+        let mut out_of_bounds = header;
+        out_of_bounds.sample_end = i32::MAX;
+        assert_eq!(
+            out_of_bounds.data_status(1692, data.len()),
+            DataStatus::OutOfBounds
+        );
     }
 
     #[test]
